@@ -6,3 +6,8 @@ export interface UserCreation {
   email: email;
   password: password;
 }
+
+export const enum UserRole {
+  USER = "user",
+  ADMIN = "admin"
+}
