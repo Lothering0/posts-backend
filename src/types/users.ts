@@ -2,9 +2,9 @@ export type email = string;
 export type password = string;
 
 export interface UserCreation {
-  name: string;
-  email: email;
-  password: password;
+  readonly name: string;
+  readonly email: email;
+  readonly password: password;
 }
 
 export const enum UserRole {

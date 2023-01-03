@@ -2,13 +2,13 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  UnauthorizedException
+  BadRequestException
 } from "@nestjs/common";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { UsersService } from "src/users/users.service";
 import { User } from "src/users/users.model";
 import { JwtService } from "@nestjs/jwt";
-import { LoginDto } from "src/types";
+import { LoginDto, AuthTokenPayload } from "src/types";
 import { AuthTokenDto } from "./dto/auth-token.dto";
 import * as bcrypt from "bcryptjs";
 
@@ -26,7 +26,7 @@ export class AuthService {
   }
 
   private async _validateUser({ email, password }: LoginDto): Promise<User> {
-    const exception = new UnauthorizedException({
+    const exception = new BadRequestException({
       message: "Wrong email or password",
       statusCode: HttpStatus.BAD_REQUEST
     });
@@ -58,7 +58,7 @@ export class AuthService {
   }
 
   private _generateToken(user: User): AuthTokenDto {
-    const payload = {
+    const payload: AuthTokenPayload = {
       id: user.id,
       email: user.email,
       role: user.role
