@@ -3,6 +3,7 @@ import { SequelizeModule } from "@nestjs/sequelize";
 import { ConfigModule } from "@nestjs/config";
 import { UsersModule } from "./users/users.module";
 import { User } from "./users/users.model";
+import { AuthModule } from "./auth/auth.module";
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { User } from "./users/users.model";
       models: [User],
       autoLoadModels: true
     }),
-    UsersModule
+    UsersModule,
+    AuthModule
   ],
   controllers: [],
   providers: []

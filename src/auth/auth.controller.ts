@@ -1,0 +1,26 @@
+import { Controller, Body, Post, HttpStatus } from "@nestjs/common";
+import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { CreateUserDto } from "src/users/dto/create-user.dto";
+import { AuthService } from "./auth.service";
+import { LoginDto } from "src/types";
+import { AuthTokenDto } from "./dto/auth-token.dto";
+
+@ApiTags("Auth")
+@Controller("auth")
+export class AuthController {
+  public constructor(private readonly authService: AuthService) {}
+
+  @ApiOperation({ summary: "Login with email and password" })
+  @ApiResponse({ status: HttpStatus.OK, type: AuthTokenDto })
+  @Post("/login")
+  public login(@Body() dto: LoginDto): Promise<AuthTokenDto> {
+    return this.authService.login(dto);
+  }
+
+  @ApiOperation({ summary: "Registration new user" })
+  @ApiResponse({ status: HttpStatus.OK, type: AuthTokenDto })
+  @Post("/registration")
+  public registration(@Body() dto: CreateUserDto): Promise<AuthTokenDto> {
+    return this.authService.registration(dto);
+  }
+}
