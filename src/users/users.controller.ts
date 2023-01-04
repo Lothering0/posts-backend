@@ -7,7 +7,7 @@ import {
   HttpStatus,
   UseGuards
 } from "@nestjs/common";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiResponse, ApiTags, ApiParam } from "@nestjs/swagger";
 import { AuthGuard } from "src/auth/auth.guard";
 import { UserRolesGuard } from "src/user-roles/user-roles.guard";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -38,6 +38,7 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: "Ban user" })
+  @ApiParam({ name: "User ID", type: Number, required: true })
   @ApiResponse({ status: HttpStatus.OK, type: User })
   @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
   @Post("/ban/:id")
