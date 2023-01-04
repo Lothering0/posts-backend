@@ -6,8 +6,3 @@ export interface UserCreation {
   readonly email: email;
   readonly password: password;
 }
-
-export const enum UserRole {
-  USER = "user",
-  ADMIN = "admin"
-}

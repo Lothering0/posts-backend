@@ -1,7 +1,8 @@
 import { Model, Table, Column, DataType } from "sequelize-typescript";
-import { id } from "../helpers/types";
-import { UserCreation, email, password, UserRole } from "./users.types";
-import { ColumnId } from "../helpers/decorators";
+import { id } from "../common/types";
+import { UserCreation, email, password } from "./users.types";
+import { UserRole } from "../user-roles/user-roles.types";
+import { ColumnId } from "../common/decorators";
 import { ApiProperty } from "@nestjs/swagger";
 
 @Table({ tableName: "users" })
