@@ -6,11 +6,12 @@ import {
   HttpStatus
 } from "@nestjs/common";
 import { UserRole } from "./user-roles.types";
+import { canActivateReturnableType } from "src/common/types";
 
 export function UserRolesGuard(...roles: UserRole[]): new () => CanActivate {
   @Injectable()
-  class Guard implements CanActivate {
-    public canActivate(context: ExecutionContext) {
+  class RolesGuard implements CanActivate {
+    public canActivate(context: ExecutionContext): canActivateReturnableType {
       const request = context.switchToHttp().getRequest();
       const isAvailable = roles.includes(request.user.role);
 
@@ -20,18 +21,22 @@ export function UserRolesGuard(...roles: UserRole[]): new () => CanActivate {
     }
 
     private _generateException(): ForbiddenException {
+      return new ForbiddenException({
+        message: this._generateMessage(),
+        statusCode: HttpStatus.FORBIDDEN
+      })
+    }
+
+    private _generateMessage(): string {
       const convertedRoles = roles.join(", ");
       let message = `Forbidden. Available only for users with role`;
 
       if (roles.length < 2) message += ` ${convertedRoles}`;
       else message += `s ${convertedRoles}`;
 
-      return new ForbiddenException({
-        message,
-        statusCode: HttpStatus.FORBIDDEN
-      })
+      return message;
     }
   }
 
-  return Guard;
+  return RolesGuard;
 }

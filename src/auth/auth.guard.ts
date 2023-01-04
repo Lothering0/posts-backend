@@ -5,14 +5,9 @@ import {
   Injectable,
   UnauthorizedException
 } from "@nestjs/common";
-import { Observable } from "rxjs";
 import { JwtService } from "@nestjs/jwt";
 import { AuthTokenPayload } from "./auth.types";
-
-type canActivateReturnableType =
-  | boolean
-  | Promise<boolean>
-  | Observable<boolean>;
+import { canActivateReturnableType } from "src/common/types";
 
 interface Request {
   headers: {

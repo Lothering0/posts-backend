@@ -21,7 +21,7 @@ export class UsersController {
 
   @ApiOperation({ summary: "Get all users" })
   @ApiResponse({ status: HttpStatus.OK, type: [User] })
-  @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
+  @UseGuards(AuthGuard)
   @Get()
   public getAll(): Promise<User[]> {
     return this.usersService.getAllUsers();
@@ -29,7 +29,7 @@ export class UsersController {
 
   @ApiOperation({ summary: "User creation" })
   @ApiResponse({ status: HttpStatus.OK, type: User })
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
   @Post()
   public create(@Body() userDto: CreateUserDto): Promise<User> {
     return this.usersService.createUser(userDto);
