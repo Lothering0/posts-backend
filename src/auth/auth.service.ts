@@ -2,7 +2,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  BadRequestException
+  NotFoundException
 } from "@nestjs/common";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { UsersService } from "src/users/users.service";
@@ -26,9 +26,9 @@ export class AuthService {
   }
 
   private async _validateUser({ email, password }: LoginDto): Promise<User> {
-    const exception = new BadRequestException({
+    const exception = new NotFoundException({
       message: "Wrong email or password",
-      statusCode: HttpStatus.BAD_REQUEST
+      statusCode: HttpStatus.NOT_FOUND
     });
 
     const user = await this.usersService.getUserByEmail(email);
@@ -48,7 +48,8 @@ export class AuthService {
       HttpStatus.BAD_REQUEST
     );
 
-    const hashPassword = await bcrypt.hash(dto.password, 5);
+    const salt = 5;
+    const hashPassword = await bcrypt.hash(dto.password, salt);
     const user = await this.usersService.createUser({
       ...dto,
       password: hashPassword
