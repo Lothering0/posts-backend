@@ -7,7 +7,6 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { AuthTokenPayload } from "./auth.types";
-import { canActivateReturnableType } from "src/common/types";
 
 interface Request {
   headers: {
@@ -37,7 +36,7 @@ export class AuthGuard implements CanActivate {
     return true;
   }
 
-  public canActivate(context: ExecutionContext): canActivateReturnableType {
+  public canActivate(context: ExecutionContext): true {
     const request: Request = context.switchToHttp().getRequest();
 
     try {

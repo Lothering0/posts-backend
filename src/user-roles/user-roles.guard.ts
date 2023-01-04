@@ -6,12 +6,11 @@ import {
   HttpStatus
 } from "@nestjs/common";
 import { UserRole } from "./user-roles.types";
-import { canActivateReturnableType } from "src/common/types";
 
 export function UserRolesGuard(...roles: UserRole[]): new () => CanActivate {
   @Injectable()
   class RolesGuard implements CanActivate {
-    public canActivate(context: ExecutionContext): canActivateReturnableType {
+    public canActivate(context: ExecutionContext): true {
       const request = context.switchToHttp().getRequest();
       const isAvailable = roles.includes(request.user.role);
 
