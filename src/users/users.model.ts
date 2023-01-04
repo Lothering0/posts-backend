@@ -1,5 +1,6 @@
 import { Model, Table, Column, DataType } from "sequelize-typescript";
-import { id, UserCreation, email, password, UserRole } from "../types";
+import { id } from "../helpers/types";
+import { UserCreation, email, password, UserRole } from "./users.types";
 import { ColumnId } from "../helpers/decorators";
 import { ApiProperty } from "@nestjs/swagger";
 

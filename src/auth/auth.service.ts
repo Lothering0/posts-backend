@@ -8,7 +8,7 @@ import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { UsersService } from "src/users/users.service";
 import { User } from "src/users/users.model";
 import { JwtService } from "@nestjs/jwt";
-import { LoginDto, AuthTokenPayload } from "src/types";
+import { LoginDto, AuthTokenPayload } from "./auth.types";
 import { AuthTokenDto } from "./dto/auth-token.dto";
 import * as bcrypt from "bcryptjs";
 

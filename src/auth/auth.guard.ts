@@ -7,7 +7,7 @@ import {
 } from "@nestjs/common";
 import { Observable } from "rxjs";
 import { JwtService } from "@nestjs/jwt";
-import { AuthTokenPayload } from "src/types";
+import { AuthTokenPayload } from "./auth.types";
 
 type canActivateReturnableType =
   | boolean
