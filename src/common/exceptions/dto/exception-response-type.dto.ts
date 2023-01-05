@@ -3,13 +3,19 @@ import { HttpStatus } from "@nestjs/common";
 import { exceptionMessage } from "../types";
 
 export class ExceptionResponseTypeDto {
-  @ApiProperty({ description: "Exception message", example: "Unauthorized" })
-  public readonly message: exceptionMessage;
-
-  @ApiProperty({ description: "Status code", example: HttpStatus.UNAUTHORIZED })
+  @ApiProperty({ description: "Status code", example: HttpStatus.FORBIDDEN })
   public readonly statusCode: HttpStatus;
 
-  public constructor(message: string, statusCode: HttpStatus) {
+  @ApiProperty({
+    description: "Exception message",
+    example: "Available only for users with role admin"
+  })
+  public readonly message: exceptionMessage;
+
+  @ApiProperty({ description: "Exception error name", example: "Forbidden" })
+  public readonly error: string;
+
+  public constructor(message: exceptionMessage, statusCode: HttpStatus) {
     this.message = message;
     this.statusCode = statusCode;
   }

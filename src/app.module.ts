@@ -1,9 +1,13 @@
 import { Module } from "@nestjs/common";
+import { APP_FILTER } from "@nestjs/core";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { ConfigModule } from "@nestjs/config";
 import { UsersModule } from "./users/users.module";
 import { User } from "./users/users.model";
 import { AuthModule } from "./auth/auth.module";
+import {
+  ForbiddenRoleExceptionFilter
+} from "./user-roles/exceptions/forbidden-role.filter";
 
 @Module({
   imports: [
@@ -24,6 +28,11 @@ import { AuthModule } from "./auth/auth.module";
     AuthModule
   ],
   controllers: [],
-  providers: []
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: ForbiddenRoleExceptionFilter
+    }
+  ]
 })
 export class AppModule {}
