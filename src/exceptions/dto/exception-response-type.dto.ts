@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { HttpStatus } from "@nestjs/common";
-import { exceptionMessage } from "../types";
+import { exceptionMessage } from "../helpers/types";
 
 export class ExceptionResponseTypeDto {
   @ApiProperty({ description: "Status code", example: HttpStatus.FORBIDDEN })

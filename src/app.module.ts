@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { APP_FILTER } from "@nestjs/core";
+import { APP_FILTER, APP_PIPE } from "@nestjs/core";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { ConfigModule } from "@nestjs/config";
 import { UsersModule } from "./users/users.module";
@@ -8,6 +8,7 @@ import { AuthModule } from "./auth/auth.module";
 import {
   ForbiddenRoleExceptionFilter
 } from "./user-roles/exceptions/forbidden-role.filter";
+import { ValidationPipe } from "./pipes/validation.pipe";
 
 @Module({
   imports: [
@@ -32,6 +33,10 @@ import {
     {
       provide: APP_FILTER,
       useClass: ForbiddenRoleExceptionFilter
+    },
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe
     }
   ]
 })
