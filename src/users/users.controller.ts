@@ -5,7 +5,8 @@ import {
   Body,
   Param,
   HttpStatus,
-  UseGuards
+  UseGuards,
+  ParseIntPipe
 } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags, ApiParam } from "@nestjs/swagger";
 import { AuthGuard } from "src/auth/auth.guard";
@@ -15,7 +16,7 @@ import { User } from "./users.model";
 import { UsersService } from "./users.service";
 import { UserRole } from "src/user-roles/user-roles.types";
 import { id } from "src/common/types";
-import { ApiResponseException } from "src/common/exceptions";
+import { ApiResponseException } from "src/exceptions";
 import { ForbiddenRoleException } from "src/user-roles/exceptions";
 
 @ApiTags("Users")
@@ -35,7 +36,8 @@ export class UsersController {
   @ApiOperation({ summary: "User creation" })
   @ApiResponse({ status: HttpStatus.OK, type: User })
   @ApiResponseException<UserRole[]>(ForbiddenRoleException, [UserRole.ADMIN])
-  @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
+  // @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
+  @UseGuards(AuthGuard, UserRolesGuard(UserRole.USER))
   @Post()
   public create(@Body() userDto: CreateUserDto): Promise<User> {
     return this.usersService.createUser(userDto);
@@ -53,7 +55,7 @@ export class UsersController {
   @ApiResponseException<UserRole[]>(ForbiddenRoleException, [UserRole.ADMIN])
   @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
   @Post("/ban/:id")
-  public ban(@Param("id") userId: id): Promise<User> {
+  public ban(@Param("id", ParseIntPipe) userId: id): Promise<User> {
     return this.usersService.banUser(userId);
   }
 }

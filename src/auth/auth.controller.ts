@@ -5,7 +5,7 @@ import { AuthService } from "./auth.service";
 import { LoginDto } from "./auth.types";
 import { AuthTokenDto } from "./dto/auth-token.dto";
 import { EmailExistException, UserNotFoundException } from "./exceptions";
-import { ApiResponseException } from "src/common/exceptions";
+import { ApiResponseException } from "src/exceptions";
 
 @ApiTags("Auth")
 @Controller("auth")
