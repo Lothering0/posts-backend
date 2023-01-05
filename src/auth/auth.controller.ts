@@ -4,6 +4,8 @@ import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./auth.types";
 import { AuthTokenDto } from "./dto/auth-token.dto";
+import { EmailExistException, UserNotFoundException } from "./exceptions";
+import { ApiResponseException } from "src/common/exceptions";
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -12,6 +14,7 @@ export class AuthController {
 
   @ApiOperation({ summary: "Login with email and password" })
   @ApiResponse({ status: HttpStatus.OK, type: AuthTokenDto })
+  @ApiResponseException(UserNotFoundException)
   @Post("/login")
   public login(@Body() dto: LoginDto): Promise<AuthTokenDto> {
     return this.authService.login(dto);
@@ -19,6 +22,7 @@ export class AuthController {
 
   @ApiOperation({ summary: "Registration new user" })
   @ApiResponse({ status: HttpStatus.OK, type: AuthTokenDto })
+  @ApiResponseException(EmailExistException)
   @Post("/registration")
   public registration(@Body() dto: CreateUserDto): Promise<AuthTokenDto> {
     return this.authService.registration(dto);
