@@ -36,7 +36,8 @@ export class UsersController {
   @ApiOperation({ summary: "User creation" })
   @ApiResponse({ status: HttpStatus.OK, type: User })
   @ApiResponseException<UserRole[]>(ForbiddenRoleException, [UserRole.ADMIN])
-  @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
+  // @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
+  @UseGuards(AuthGuard, UserRolesGuard(UserRole.USER))
   @Post()
   public create(@Body() userDto: CreateUserDto): Promise<User> {
     return this.usersService.createUser(userDto);
