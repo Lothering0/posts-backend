@@ -37,7 +37,7 @@ export class UsersController {
     return this.usersService.createUser(userDto);
   }
 
-  @ApiOperation({ summary: "Ban user" })
+  @ApiOperation({ summary: "Ban/unban user" })
   @ApiParam({ name: "User ID", type: Number, required: true })
   @ApiResponse({ status: HttpStatus.OK, type: User })
   @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
