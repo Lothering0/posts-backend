@@ -1,7 +1,7 @@
 import { ForbiddenException, HttpStatus } from "@nestjs/common";
 import { UserRole } from "../user-roles.types";
 
-function generateMessage(roles: UserRole[]): string {
+function createMessage(roles: UserRole[]): string {
   const convertedRoles = roles.join(", ");
   let message = `Forbidden. Available only for users with role`;
 
@@ -14,7 +14,7 @@ function generateMessage(roles: UserRole[]): string {
 export class ForbiddenRoleException extends ForbiddenException {
   public constructor(roles: UserRole[]) {
     super({
-      message: generateMessage(roles),
+      message: createMessage(roles),
       statusCode: HttpStatus.FORBIDDEN
     });
   }
