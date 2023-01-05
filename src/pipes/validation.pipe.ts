@@ -12,9 +12,9 @@ export class ValidationPipe implements PipeTransform<any, any> {
     if (!errors.length) return value;
 
     const messages = errors.map(({ property, constraints }) => {
-      const values = Object.values(constraints);
+      const warnings = Object.values(constraints);
 
-      return { [property]: values };
+      return { property, warnings };
     });
 
     throw new ValidationException(messages);

@@ -6,7 +6,6 @@ import { ForbiddenRoleException } from "./forbidden-role.exception";
 export class ForbiddenRoleExceptionFilter extends BaseExceptionFilter {
   public catch(exception: any, host: ArgumentsHost): void {
     exception.response = {
-      statusCode: exception.status,
       error: "Forbidden",
       ...exception.response
     };
