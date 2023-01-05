@@ -23,6 +23,7 @@ export class UsersController {
 
   @ApiOperation({ summary: "Get all users" })
   @ApiResponse({ status: HttpStatus.OK, type: [User] })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Forbidden" })
   @UseGuards(AuthGuard)
   @Get()
   public getAll(): Promise<User[]> {
@@ -38,7 +39,13 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: "Ban/unban user" })
-  @ApiParam({ name: "User ID", type: Number, required: true })
+  @ApiParam({
+    name: "id",
+    type: Number,
+    description: "ID of the user to be blocked/unblocked",
+    example: 1,
+    required: true
+  })
   @ApiResponse({ status: HttpStatus.OK, type: User })
   @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
   @Post("/ban/:id")

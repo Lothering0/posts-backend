@@ -18,3 +18,10 @@ export interface AuthTokenPayload {
   readonly iat?: number;
   readonly exp?: number;
 }
+
+export interface AuthRequest {
+  headers: {
+    authorization: string;
+  };
+  user: AuthTokenPayload;
+}

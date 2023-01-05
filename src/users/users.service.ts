@@ -1,7 +1,8 @@
-import { NotFoundException, Injectable, HttpStatus } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { User } from "./users.model";
+import { UserNotFoundException } from "./exceptions";
 import { id } from "src/common/types";
 import { email } from "./users.types";
 
@@ -32,10 +33,7 @@ export class UsersService {
   public async banUser(id: id): Promise<User> {
     const user = await this.usersRepository.findByPk(id);
 
-    if (!user) throw new NotFoundException({
-      message: "User not found",
-      statusCode: HttpStatus.NOT_FOUND
-    });
+    if (!user) throw new UserNotFoundException();
 
     user.banned = !user.banned;
 
