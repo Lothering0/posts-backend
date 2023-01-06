@@ -17,4 +17,3 @@ export function createErrorResponse<T = any>(
     type: ExceptionResponseTypeDto
   };
 }
-

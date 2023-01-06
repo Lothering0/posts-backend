@@ -18,6 +18,7 @@ import { UserRole } from "src/user-roles/user-roles.types";
 import { id } from "src/common/types";
 import { ApiResponseException } from "src/exceptions";
 import { ForbiddenRoleException } from "src/user-roles/exceptions";
+import { UserNotFoundException } from "./exceptions";
 
 @ApiTags("Users")
 @Controller("users")
@@ -36,6 +37,7 @@ export class UsersController {
   @ApiOperation({ summary: "User creation" })
   @ApiResponse({ status: HttpStatus.OK, type: User })
   @ApiResponseException<UserRole[]>(ForbiddenRoleException, [UserRole.ADMIN])
+  @ApiResponseException(UserNotFoundException)
   @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
   @Post()
   public create(@Body() userDto: CreateUserDto): Promise<User> {
@@ -52,6 +54,7 @@ export class UsersController {
   })
   @ApiResponse({ status: HttpStatus.OK, type: User })
   @ApiResponseException<UserRole[]>(ForbiddenRoleException, [UserRole.ADMIN])
+  @ApiResponseException(UserNotFoundException)
   @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
   @Post("/ban/:id")
   public ban(
@@ -71,6 +74,7 @@ export class UsersController {
   })
   @ApiResponse({ status: HttpStatus.OK, type: User })
   @ApiResponseException<UserRole[]>(ForbiddenRoleException, [UserRole.ADMIN])
+  @ApiResponseException(UserNotFoundException)
   @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
   @Post("/unban/:id")
   public unban(@Param("id", ParseIntPipe) userId: id): Promise<User> {
