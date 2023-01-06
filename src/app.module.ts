@@ -23,8 +23,8 @@ import { ValidationPipe } from "./pipes/validation.pipe";
       models: [User],
       autoLoadModels: true
     }),
-    UsersModule,
-    AuthModule
+    AuthModule,
+    UsersModule
   ],
   controllers: [],
   providers: [
