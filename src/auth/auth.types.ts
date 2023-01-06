@@ -1,9 +1,6 @@
-import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { id } from "../common/types";
 import { email } from "../users/users.types";
 import { UserRole } from "../user-roles/user-roles.types";
-
-export type LoginDto = Pick<CreateUserDto, "email" | "password">;
 
 export type token = string;
 
