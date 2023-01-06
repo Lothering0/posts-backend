@@ -7,6 +7,7 @@ export function UserRolesGuard(...roles: UserRole[]): new () => CanActivate {
   class RolesGuard implements CanActivate {
     public canActivate(context: ExecutionContext): true {
       const request = context.switchToHttp().getRequest();
+      // FIXME: Fix getting user
       const isAvailable = roles.includes(request.user.role);
 
       if (isAvailable) return true;

@@ -6,6 +6,7 @@ import { UserNotFoundException } from "./exceptions";
 import { id } from "src/common/types";
 import { email } from "./users.types";
 import { BanUserDto } from "./dto";
+import { EmailExistException } from "src/auth/exceptions";
 
 @Injectable()
 export class UsersService {
@@ -15,7 +16,11 @@ export class UsersService {
   ) {}
 
   public async createUser(dto: CreateUserDto): Promise<User> {
-    return await this.usersRepository.create(dto);
+    try {
+      return await this.usersRepository.create(dto);
+    } catch (error) {
+      throw new EmailExistException();
+    }
   }
 
   public async getAllUsers(): Promise<User[]> {

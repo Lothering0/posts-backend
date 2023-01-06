@@ -19,6 +19,7 @@ import { id } from "src/common/types";
 import { ApiResponseException } from "src/exceptions";
 import { ForbiddenRoleException } from "src/user-roles/exceptions";
 import { UserNotFoundException } from "./exceptions";
+import { EmailExistException } from "src/auth/exceptions";
 
 @ApiTags("Users")
 @Controller("users")
@@ -37,7 +38,7 @@ export class UsersController {
   @ApiOperation({ summary: "User creation" })
   @ApiResponse({ status: HttpStatus.OK, type: User })
   @ApiResponseException<UserRole[]>(ForbiddenRoleException, [UserRole.ADMIN])
-  @ApiResponseException(UserNotFoundException)
+  @ApiResponseException(EmailExistException)
   @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
   @Post()
   public create(@Body() userDto: CreateUserDto): Promise<User> {
