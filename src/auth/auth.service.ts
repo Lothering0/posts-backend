@@ -6,6 +6,7 @@ import { JwtService } from "@nestjs/jwt";
 import { LoginDto, AuthTokenPayload } from "./auth.types";
 import { AuthTokenDto } from "./dto/auth-token.dto";
 import { UserNotFoundException, EmailExistException } from "./exceptions";
+import { passwordConfig } from "src/config/auth.config";
 import * as bcrypt from "bcryptjs";
 
 @Injectable()
@@ -38,8 +39,7 @@ export class AuthService {
 
     if (foundUser) throw new EmailExistException();
 
-    const salt = 5;
-    const hashPassword = await bcrypt.hash(dto.password, salt);
+    const hashPassword = await bcrypt.hash(dto.password, passwordConfig.SALT);
     const user = await this.usersService.createUser({
       ...dto,
       password: hashPassword

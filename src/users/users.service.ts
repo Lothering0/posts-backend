@@ -5,6 +5,7 @@ import { User } from "./users.model";
 import { UserNotFoundException } from "./exceptions";
 import { id } from "src/common/types";
 import { email } from "./users.types";
+import { BanUserDto } from "./dto";
 
 @Injectable()
 export class UsersService {
@@ -30,14 +31,27 @@ export class UsersService {
     return user;
   }
 
-  public async banUser(id: id): Promise<User> {
+  public async banUser(id: id, dto: BanUserDto): Promise<User> {
     const user = await this.usersRepository.findByPk(id);
 
     if (!user) throw new UserNotFoundException();
 
-    user.banned = !user.banned;
-
+    user.banned = true;
+    user.banReason = dto.banReason;
     await user.save();
+
+    return user;
+  }
+
+  public async unbanUser(id: id): Promise<User> {
+    const user = await this.usersRepository.findByPk(id);
+
+    if (!user) throw new UserNotFoundException();
+
+    user.banned = false;
+    user.banReason = null;
+    await user.save();
+
     return user;
   }
 }

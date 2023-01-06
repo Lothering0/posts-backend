@@ -11,7 +11,7 @@ import {
 import { ApiOperation, ApiResponse, ApiTags, ApiParam } from "@nestjs/swagger";
 import { AuthGuard } from "src/auth/auth.guard";
 import { UserRolesGuard } from "src/user-roles/user-roles.guard";
-import { CreateUserDto } from "./dto/create-user.dto";
+import { CreateUserDto, BanUserDto } from "./dto";
 import { User } from "./users.model";
 import { UsersService } from "./users.service";
 import { UserRole } from "src/user-roles/user-roles.types";
@@ -42,11 +42,11 @@ export class UsersController {
     return this.usersService.createUser(userDto);
   }
 
-  @ApiOperation({ summary: "Ban/unban user" })
+  @ApiOperation({ summary: "Ban user" })
   @ApiParam({
     name: "id",
     type: Number,
-    description: "ID of the user to be blocked/unblocked",
+    description: "ID of the user to be blocked",
     example: 1,
     required: true
   })
@@ -54,7 +54,26 @@ export class UsersController {
   @ApiResponseException<UserRole[]>(ForbiddenRoleException, [UserRole.ADMIN])
   @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
   @Post("/ban/:id")
-  public ban(@Param("id", ParseIntPipe) userId: id): Promise<User> {
-    return this.usersService.banUser(userId);
+  public ban(
+    @Param("id", ParseIntPipe) userId: id,
+    @Body() banUserDto: BanUserDto
+  ): Promise<User> {
+    return this.usersService.banUser(userId, banUserDto);
+  }
+
+  @ApiOperation({ summary: "Unban user" })
+  @ApiParam({
+    name: "id",
+    type: Number,
+    description: "ID of the user to be unblocked",
+    example: 1,
+    required: true
+  })
+  @ApiResponse({ status: HttpStatus.OK, type: User })
+  @ApiResponseException<UserRole[]>(ForbiddenRoleException, [UserRole.ADMIN])
+  @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
+  @Post("/unban/:id")
+  public unban(@Param("id", ParseIntPipe) userId: id): Promise<User> {
+    return this.usersService.unbanUser(userId);
   }
 }
