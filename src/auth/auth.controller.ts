@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./auth.types";
-import { AuthTokenDto } from "./dto/auth-token.dto";
+import { AuthTokenDto } from "./dto";
 import { EmailExistException, UserNotFoundException } from "./exceptions";
 import { ApiResponseException } from "src/exceptions";
 

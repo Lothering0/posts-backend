@@ -4,8 +4,9 @@ import { UsersService } from "src/users/users.service";
 import { User } from "src/users/users.model";
 import { JwtService } from "@nestjs/jwt";
 import { LoginDto, AuthTokenPayload } from "./auth.types";
-import { AuthTokenDto } from "./dto/auth-token.dto";
-import { UserNotFoundException, EmailExistException } from "./exceptions";
+import { email, password } from "src/users/users.types";
+import { AuthTokenDto } from "./dto";
+import { WrongCredentialsException, EmailExistException } from "./exceptions";
 import { passwordConfig } from "src/config/auth.config";
 import * as bcrypt from "bcryptjs";
 
@@ -23,15 +24,28 @@ export class AuthService {
   }
 
   private async _validateUser({ email, password }: LoginDto): Promise<User> {
-    const exception = new UserNotFoundException();
+    const user = await this._validateEmail(email);
 
+    return this._validatePassword(password, user);
+  }
+
+  private async _validateEmail(email: email): Promise<User> {
     const user = await this.usersService.getUserByEmail(email);
-    if (!user) throw exception;
 
+    if (user) return user;
+
+    throw new WrongCredentialsException();
+  }
+
+  private async _validatePassword(
+    password: password,
+    user: User
+  ): Promise<User> {
     const isPasswordsMatch = await bcrypt.compare(password, user.password);
-    if (!isPasswordsMatch) throw exception;
 
-    return user;
+    if (isPasswordsMatch) return user;
+
+    throw new WrongCredentialsException();
   }
 
   public async registration(dto: CreateUserDto): Promise<AuthTokenDto> {

@@ -1,6 +1,6 @@
 import { HttpException } from "@nestjs/common";
 import { ApiResponseOptions } from "@nestjs/swagger";
-import { ExceptionResponseTypeDto } from "../dto/exception-response-type.dto";
+import { ExceptionResponseTypeDto } from "../dto";
 
 export function createErrorResponse<T = any>(
   exception: new (...args: T[]) => HttpException,

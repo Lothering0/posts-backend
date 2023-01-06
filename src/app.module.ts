@@ -5,9 +5,7 @@ import { ConfigModule } from "@nestjs/config";
 import { UsersModule } from "./users/users.module";
 import { User } from "./users/users.model";
 import { AuthModule } from "./auth/auth.module";
-import {
-  ForbiddenRoleExceptionFilter
-} from "./user-roles/exceptions/forbidden-role.filter";
+import { ForbiddenRoleExceptionFilter } from "./user-roles/exceptions";
 import { ValidationPipe } from "./pipes/validation.pipe";
 
 @Module({

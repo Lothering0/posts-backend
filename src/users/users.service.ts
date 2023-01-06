@@ -28,9 +28,9 @@ export class UsersService {
       include: { all: true }
     });
 
-    if (!user) throw new UserNotFoundException();
+    if (user) return user;
 
-    return user;
+    throw new UserNotFoundException()
   }
 
   public async banUser(id: id, dto: BanUserDto): Promise<User> {
