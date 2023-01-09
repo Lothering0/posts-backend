@@ -20,6 +20,7 @@ import { ApiResponseException } from "src/exceptions";
 import { ForbiddenRoleException } from "src/user-roles/exceptions";
 import { UserNotFoundException } from "./exceptions";
 import { EmailExistException } from "src/auth/exceptions";
+import { SetRequiredRoles } from "src/auth/auth.decorators";
 
 @ApiTags("Users")
 @Controller("users")
@@ -29,7 +30,8 @@ export class UsersController {
   @ApiOperation({ summary: "Get all users" })
   @ApiResponse({ status: HttpStatus.OK, type: [User] })
   @ApiResponseException<UserRole[]>(ForbiddenRoleException, [UserRole.ADMIN])
-  @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
+  @SetRequiredRoles(UserRole.ADMIN)
+  @UseGuards(AuthGuard, UserRolesGuard)
   @Get()
   public getAll(): Promise<User[]> {
     return this.usersService.getAllUsers();
@@ -39,7 +41,8 @@ export class UsersController {
   @ApiResponse({ status: HttpStatus.OK, type: User })
   @ApiResponseException<UserRole[]>(ForbiddenRoleException, [UserRole.ADMIN])
   @ApiResponseException(EmailExistException)
-  @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
+  @SetRequiredRoles(UserRole.ADMIN)
+  @UseGuards(AuthGuard, UserRolesGuard)
   @Post()
   public create(@Body() userDto: CreateUserDto): Promise<User> {
     return this.usersService.createUser(userDto);
@@ -56,7 +59,8 @@ export class UsersController {
   @ApiResponse({ status: HttpStatus.OK, type: User })
   @ApiResponseException<UserRole[]>(ForbiddenRoleException, [UserRole.ADMIN])
   @ApiResponseException(UserNotFoundException)
-  @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
+  @SetRequiredRoles(UserRole.ADMIN)
+  @UseGuards(AuthGuard, UserRolesGuard)
   @Post("/ban/:id")
   public ban(
     @Param("id", ParseIntPipe) userId: id,
@@ -76,7 +80,8 @@ export class UsersController {
   @ApiResponse({ status: HttpStatus.OK, type: User })
   @ApiResponseException<UserRole[]>(ForbiddenRoleException, [UserRole.ADMIN])
   @ApiResponseException(UserNotFoundException)
-  @UseGuards(AuthGuard, UserRolesGuard(UserRole.ADMIN))
+  @SetRequiredRoles(UserRole.ADMIN)
+  @UseGuards(AuthGuard, UserRolesGuard)
   @Post("/unban/:id")
   public unban(@Param("id", ParseIntPipe) userId: id): Promise<User> {
     return this.usersService.unbanUser(userId);
