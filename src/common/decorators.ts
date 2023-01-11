@@ -1,18 +1,18 @@
 import { Column, DataType } from "sequelize-typescript";
 import { Length } from "class-validator";
-import { FieldConfig } from "src/config/helpers/types";
+import { FieldConfig } from "src/config/auth.config";
 
 interface LengthConfig {
   min: number;
   max: number;
 }
 
-type CreateLengthConfig = Partial<FieldConfig & LengthConfig>;
+type CreateLengthConfig = Partial<typeof FieldConfig & LengthConfig>;
 
 /** Decorator based on class-validator Length */
 export function CreateLength(
   field: string,
-  config: FieldConfig
+  config: typeof FieldConfig
 ): PropertyDecorator;
 export function CreateLength(
   field: string,

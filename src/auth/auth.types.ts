@@ -1,12 +1,9 @@
 import { id } from "../common/types";
 import { email } from "../users/users.types";
 import { UserRole } from "../user-roles/user-roles.types";
+import { Request } from "express";
 
 export type token = string;
-
-export interface AuthToken {
-  readonly token: token;
-}
 
 export interface AuthTokenPayload {
   readonly id: id;
@@ -16,9 +13,6 @@ export interface AuthTokenPayload {
   readonly exp?: number;
 }
 
-export interface AuthRequest {
-  headers: {
-    authorization: string;
-  };
+export interface AuthRequest extends Request {
   user: AuthTokenPayload;
 }

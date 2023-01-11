@@ -5,6 +5,7 @@ import {
   Body,
   Param,
   HttpStatus,
+  HttpCode,
   UseGuards,
   ParseIntPipe
 } from "@nestjs/common";
@@ -38,12 +39,13 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: "User creation" })
-  @ApiResponse({ status: HttpStatus.OK, type: User })
+  @ApiResponse({ status: HttpStatus.CREATED, type: User })
   @ApiResponseException<UserRole[]>(ForbiddenRoleException, [UserRole.ADMIN])
   @ApiResponseException(EmailExistException)
   @SetRequiredRoles(UserRole.ADMIN)
   @UseGuards(AuthGuard, UserRolesGuard)
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   public create(@Body() userDto: CreateUserDto): Promise<User> {
     return this.usersService.createUser(userDto);
   }

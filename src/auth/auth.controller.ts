@@ -1,8 +1,16 @@
-import { Controller, Body, Post, HttpStatus } from "@nestjs/common";
+import {
+  Controller,
+  Body,
+  Post,
+  HttpStatus,
+  HttpCode,
+  Res
+} from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { Response } from "express";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { AuthService } from "./auth.service";
-import { AuthTokenDto, LoginDto } from "./dto";
+import { AuthResponseDto, LoginDto } from "./dto";
 import { EmailExistException, WrongCredentialsException } from "./exceptions";
 import { ApiResponseException } from "src/exceptions";
 
@@ -12,18 +20,25 @@ export class AuthController {
   public constructor(private readonly authService: AuthService) {}
 
   @ApiOperation({ summary: "Login with email and password" })
-  @ApiResponse({ status: HttpStatus.OK, type: AuthTokenDto })
+  @ApiResponse({ status: HttpStatus.OK, type: AuthResponseDto })
   @ApiResponseException(WrongCredentialsException)
   @Post("/login")
-  public login(@Body() dto: LoginDto): Promise<AuthTokenDto> {
-    return this.authService.login(dto);
+  public login(
+    @Body() dto: LoginDto,
+    @Res({ passthrough: true }) response: Response
+  ): Promise<AuthResponseDto> {
+    return this.authService.login(dto, response);
   }
 
   @ApiOperation({ summary: "Registration new user" })
-  @ApiResponse({ status: HttpStatus.OK, type: AuthTokenDto })
+  @ApiResponse({ status: HttpStatus.CREATED, type: AuthResponseDto })
   @ApiResponseException(EmailExistException)
   @Post("/registration")
-  public registration(@Body() dto: CreateUserDto): Promise<AuthTokenDto> {
-    return this.authService.registration(dto);
+  @HttpCode(HttpStatus.CREATED)
+  public registration(
+    @Body() dto: CreateUserDto,
+    @Res({ passthrough: true }) response: Response
+  ): Promise<AuthResponseDto> {
+    return this.authService.registration(dto, response);
   }
 }

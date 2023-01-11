@@ -1,13 +1,14 @@
 import { Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { Response } from "express";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { UsersService } from "src/users/users.service";
 import { User } from "src/users/users.model";
-import { JwtService } from "@nestjs/jwt";
-import { AuthTokenPayload } from "./auth.types";
+import { AuthTokenPayload, token } from "./auth.types";
 import { email, password } from "src/users/users.types";
-import { LoginDto, AuthTokenDto } from "./dto";
+import { LoginDto, AuthResponseDto } from "./dto";
 import { WrongCredentialsException, EmailExistException } from "./exceptions";
-import { passwordConfig } from "src/config/auth.config";
+import { PasswordConfig, AuthTokenConfig } from "src/config/auth.config";
 import * as bcrypt from "bcryptjs";
 
 @Injectable()
@@ -17,10 +18,15 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) {}
 
-  public async login(dto: LoginDto): Promise<AuthTokenDto> {
+  public async login(
+    dto: LoginDto,
+    response: Response
+  ): Promise<AuthResponseDto> {
     const user = await this._validateUser(dto);
+    const token = this._generateToken(user);
+    this._setAuthTokenCookie(response, token);
 
-    return this._generateToken(user);
+    return { message: "Success" };
   }
 
   private async _validateUser({ email, password }: LoginDto): Promise<User> {
@@ -48,21 +54,26 @@ export class AuthService {
     throw new WrongCredentialsException();
   }
 
-  public async registration(dto: CreateUserDto): Promise<AuthTokenDto> {
+  public async registration(
+    dto: CreateUserDto,
+    response: Response
+  ): Promise<AuthResponseDto> {
     const foundUser = await this.usersService.getUserByEmail(dto.email);
 
     if (foundUser) throw new EmailExistException();
 
-    const hashPassword = await bcrypt.hash(dto.password, passwordConfig.SALT);
+    const hashPassword = await bcrypt.hash(dto.password, PasswordConfig.SALT);
     const user = await this.usersService.createUser({
       ...dto,
       password: hashPassword
     });
+    const token = this._generateToken(user);
+    this._setAuthTokenCookie(response, token);
 
-    return this._generateToken(user);
+    return { message: "Success" };
   }
 
-  private _generateToken(user: User): AuthTokenDto {
+  private _generateToken(user: User): token {
     const payload: AuthTokenPayload = {
       id: user.id,
       email: user.email,
@@ -70,6 +81,13 @@ export class AuthService {
     };
     const token = this.jwtService.sign(payload);
 
-    return { token };
+    return token;
+  }
+
+  private _setAuthTokenCookie(response: Response, token: token): void {
+    response.cookie("auth_token", token, {
+      httpOnly: AuthTokenConfig.HTTP_ONLY,
+      maxAge: AuthTokenConfig.MAX_AGE
+    });
   }
 }

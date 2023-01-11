@@ -9,18 +9,6 @@ export class AuthGuard implements CanActivate {
 
   public constructor(private readonly jwtService: JwtService) {}
 
-  private _tryAuthorizate(request: AuthRequest): true {
-    const { authorization } = request.headers;
-    const [authType, token] = authorization.split(" ");
-
-    if (authType !== "Bearer" || !token) throw this._unauthorized;
-
-    const user: AuthTokenPayload = this.jwtService.verify(token);
-    request.user = user;
-
-    return true;
-  }
-
   public canActivate(context: ExecutionContext): true {
     const request: AuthRequest = context.switchToHttp().getRequest();
 
@@ -29,5 +17,16 @@ export class AuthGuard implements CanActivate {
     } catch (error) {
       throw this._unauthorized;
     }
+  }
+
+  private _tryAuthorizate(request: AuthRequest): true {
+    const { auth_token } = request.cookies;
+
+    if (!auth_token) throw this._unauthorized;
+
+    const user: AuthTokenPayload = this.jwtService.verify(auth_token);
+    request.user = user;
+
+    return true;
   }
 }
