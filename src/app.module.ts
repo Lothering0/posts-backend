@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { APP_FILTER, APP_PIPE } from "@nestjs/core";
+import { APP_FILTER, APP_PIPE, APP_INTERCEPTOR } from "@nestjs/core";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { ConfigModule } from "@nestjs/config";
 import { UsersModule } from "./users/users.module";
@@ -7,6 +7,7 @@ import { User } from "./users/users.model";
 import { AuthModule } from "./auth/auth.module";
 import { ForbiddenRoleExceptionFilter } from "./user-roles/exceptions";
 import { ValidationPipe } from "./pipes/validation.pipe";
+import { ResponseInterceptor } from "./interceptors/response.interceptor";
 
 @Module({
   imports: [
@@ -35,6 +36,10 @@ import { ValidationPipe } from "./pipes/validation.pipe";
     {
       provide: APP_PIPE,
       useClass: ValidationPipe
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseInterceptor
     }
   ]
 })
