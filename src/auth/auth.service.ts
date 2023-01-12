@@ -113,7 +113,7 @@ export class AuthService {
     config: TokenConfig
   ): void {
     response.cookie(config.COOKIE_NAME, token, {
-      httpOnly: config.HTTP_ONLY,
+      httpOnly: true,
       maxAge: config.MAX_AGE
     });
   }
