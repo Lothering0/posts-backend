@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
+import { JwtService, JwtSignOptions } from "@nestjs/jwt";
 import { Response } from "express";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { UsersService } from "src/users/users.service";
@@ -8,8 +8,14 @@ import { AuthTokenPayload, token } from "./auth.types";
 import { email, password } from "src/users/users.types";
 import { LoginDto, AuthResponseDto } from "./dto";
 import { WrongCredentialsException, EmailExistException } from "./exceptions";
-import { PasswordConfig, AuthTokenConfig } from "src/config/auth.config";
+import {
+  PasswordConfig,
+  AccessTokenConfig,
+  RefreshTokenConfig
+} from "src/config";
 import * as bcrypt from "bcryptjs";
+
+type TokenConfig = typeof AccessTokenConfig | typeof RefreshTokenConfig;
 
 @Injectable()
 export class AuthService {
@@ -23,8 +29,7 @@ export class AuthService {
     response: Response
   ): Promise<AuthResponseDto> {
     const user = await this._validateUser(dto);
-    const token = this._generateToken(user);
-    this._setAuthTokenCookie(response, token);
+    this._setTokensCookie(response, user);
 
     return { message: "Success" };
   }
@@ -67,27 +72,49 @@ export class AuthService {
       ...dto,
       password: hashPassword
     });
-    const token = this._generateToken(user);
-    this._setAuthTokenCookie(response, token);
+    this._setTokensCookie(response, user);
 
     return { message: "Success" };
   }
 
-  private _generateToken(user: User): token {
+  private _generateToken(user: User, config: TokenConfig): token {
     const payload: AuthTokenPayload = {
       id: user.id,
       email: user.email,
       role: user.role
     };
-    const token = this.jwtService.sign(payload);
+    const jwtOptions: JwtSignOptions = {
+      secret: config.SECRET,
+      expiresIn: config.MAX_AGE
+    };
+    const token = this.jwtService.sign(payload, jwtOptions);
 
     return token;
   }
 
-  private _setAuthTokenCookie(response: Response, token: token): void {
-    response.cookie("auth_token", token, {
-      httpOnly: AuthTokenConfig.HTTP_ONLY,
-      maxAge: AuthTokenConfig.MAX_AGE
+  /** Generate access and refresh tokens */
+  private _generateTokens(user: User): [token, token] {
+    const accessToken = this._generateToken(user, AccessTokenConfig);
+    const refreshToken = this._generateToken(user, RefreshTokenConfig);
+
+    return [accessToken, refreshToken];
+  }
+
+  private _setTokensCookie(response: Response, user: User): void {
+    const [accessToken, refreshToken] = this._generateTokens(user);
+
+    this._setTokenCookie(response, accessToken, AccessTokenConfig);
+    this._setTokenCookie(response, refreshToken, RefreshTokenConfig);
+  }
+
+  private _setTokenCookie(
+    response: Response,
+    token: token,
+    config: TokenConfig
+  ): void {
+    response.cookie(config.COOKIE_NAME, token, {
+      httpOnly: config.HTTP_ONLY,
+      maxAge: config.MAX_AGE
     });
   }
 }

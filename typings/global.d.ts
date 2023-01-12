@@ -9,7 +9,8 @@ export declare global {
       POSTGRES_DB: string;
       POSTGRES_PORT: string;
 
-      PRIVATE_KEY: string;
+      ACCESS_SECRET: string;
+      REFRESH_SECRET: string;
     }
   }
 }
