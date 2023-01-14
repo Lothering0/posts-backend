@@ -2,12 +2,12 @@ import { Module } from "@nestjs/common";
 import { APP_FILTER, APP_PIPE, APP_INTERCEPTOR } from "@nestjs/core";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { ConfigModule } from "@nestjs/config";
-import { UsersModule } from "./users/users.module";
-import { User } from "./users/users.model";
-import { AuthModule } from "./auth/auth.module";
+import { UsersModule, User } from "./users";
+import { AuthModule } from "./auth";
+import { TokensModule } from "./tokens";
 import { ForbiddenRoleExceptionFilter } from "./user-roles/exceptions";
 import { ValidationPipe } from "./pipes/validation.pipe";
-import { ResponseInterceptor } from "./interceptors/response.interceptor";
+import { ResponseInterceptor } from "./interceptors";
 
 @Module({
   imports: [
@@ -25,7 +25,8 @@ import { ResponseInterceptor } from "./interceptors/response.interceptor";
       autoLoadModels: true
     }),
     AuthModule,
-    UsersModule
+    UsersModule,
+    TokensModule
   ],
   controllers: [],
   providers: [

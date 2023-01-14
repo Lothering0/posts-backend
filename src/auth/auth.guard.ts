@@ -1,31 +1,35 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import { AuthTokenPayload, AuthRequest } from "./auth.types";
+import { Response } from "express";
+import { AuthRequest } from "./auth.types";
+import { TokenPayload, TokensService } from "src/tokens";
 import { UserUnauthorizedException } from "./exceptions";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   private _unauthorized = new UserUnauthorizedException();
 
-  public constructor(private readonly jwtService: JwtService) {}
+  public constructor(private readonly tokensService: TokensService) {}
 
   public canActivate(context: ExecutionContext): true {
     const request: AuthRequest = context.switchToHttp().getRequest();
+    const response: Response = context.switchToHttp().getResponse();
 
     try {
-      return this._tryAuthorizate(request);
+      return this._tryAuthorizate(request, response);
     } catch (error) {
       throw this._unauthorized;
     }
   }
 
-  private _tryAuthorizate(request: AuthRequest): true {
-    const { auth_token } = request.cookies;
+  private _tryAuthorizate(request: AuthRequest, response: Response): true {
+    const { access_token } = request.cookies;
 
-    if (!auth_token) throw this._unauthorized;
+    if (!access_token) throw this._unauthorized;
 
-    const user: AuthTokenPayload = this.jwtService.verify(auth_token);
+    const user: TokenPayload =
+      this.tokensService.verifyAccessToken(access_token);
     request.user = user;
+    // response.cookie("hello", "world");
 
     return true;
   }

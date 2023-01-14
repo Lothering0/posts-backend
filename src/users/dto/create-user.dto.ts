@@ -11,7 +11,6 @@ export class CreateUserDto implements UserCreation {
   public readonly name: string;
 
   @ApiProperty({ description: "Email address", example: "user@mail.com" })
-  @IsString({ message: "Should be a string" })
   @IsEmail({}, { message: "Invalid email" })
   public readonly email: email;
 

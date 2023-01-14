@@ -11,8 +11,7 @@ import { EmailExistException } from "src/auth/exceptions";
 @Injectable()
 export class UsersService {
   public constructor(
-    @InjectModel(User)
-    private readonly usersRepository: typeof User
+    @InjectModel(User) private readonly usersRepository: typeof User
   ) {}
 
   public async createUser(dto: CreateUserDto): Promise<User> {
