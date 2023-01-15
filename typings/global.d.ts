@@ -1,3 +1,5 @@
+import { TokenPayload } from "src/tokens";
+
 export declare global {
   namespace NodeJS {
     interface ProcessEnv {
@@ -11,6 +13,12 @@ export declare global {
 
       ACCESS_SECRET: string;
       REFRESH_SECRET: string;
+    }
+  }
+
+  namespace Express {
+    interface Request {
+      user: TokenPayload;
     }
   }
 }

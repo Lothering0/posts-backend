@@ -5,6 +5,7 @@ import { UserRole } from "../user-roles/user-roles.types";
 export type accessToken = string;
 export type refreshToken = string;
 export type token = accessToken | refreshToken;
+export type tokensPair = [accessToken, refreshToken];
 
 export interface TokenPayload {
   readonly id: id;

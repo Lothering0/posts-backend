@@ -6,6 +6,7 @@ export type {
   token,
   accessToken,
   refreshToken,
+  tokensPair,
   TokenPayload,
   TokensCreation
 } from "./tokens.types";

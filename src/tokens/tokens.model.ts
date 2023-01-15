@@ -9,7 +9,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { User } from "src/users";
 import { ColumnId } from "src/common/decorators";
 import { JWT_EXAMPLE } from "src/common/constants";
-import { id } from "src/common/types";
+import { id, Maybe } from "src/common/types";
 import { refreshToken, TokensCreation } from "./tokens.types";
 
 @Table({ tableName: "tokens" })
@@ -24,6 +24,6 @@ export class Tokens extends Model<Tokens, TokensCreation> {
   public readonly userId: id;
 
   @ApiProperty({ description: "Refresh JWT", example: JWT_EXAMPLE })
-  @Column({ type: DataType.INTEGER, unique: true })
-  public readonly refreshToken: refreshToken;
+  @Column({ type: DataType.STRING, unique: true })
+  public refreshToken: Maybe<refreshToken>;
 }
